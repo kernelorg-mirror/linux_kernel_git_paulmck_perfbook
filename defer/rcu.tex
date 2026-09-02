@@ -73,11 +73,14 @@ mapping use cases onto RCU.
 	Isn't RCU nothing more nor less than a replacement for some
 	reader-writer-locking use cases???
 }\QuickQuizAnswer{
-	It is true that Linux-kernel RCU has most frequently been used
-	to replace reader-writer locking,
+	It is true that Linux-kernel RCU has been most frequently used
+	to replace reader-writer locking on linked data structures.
+	In fact, such replacement accounts for about 95\pct\ of the uses
+	of RCU in the Linux kernel.
 	However,
 	\cref{sec:defer:RCU Usage}
-	shows many additional RCU use cases.
+	presents many additional (although much less common) RCU use
+	cases.
 }\QuickQuizEnd
 
 The remainder of this
