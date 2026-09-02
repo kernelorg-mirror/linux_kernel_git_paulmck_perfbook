@@ -408,8 +408,10 @@ to initialize the pointed-to structure.
 		complete. \\
 \cellcolor{white}&
 	\tco{call_rcu()} &
-		Invoke the specified function after all pre-existing RCU read-side
-		critical sections complete. \\
+		Asynchronous counterpart to \co{synchronize_rcu()}:
+		Once all pre-exiting RCU read-side critical sections
+		have completed, pass the specified value to the specified
+		function. \\
 &
 	\tco{rcu_assign_pointer()} &
 		Safely update an RCU-protected pointer. \\
