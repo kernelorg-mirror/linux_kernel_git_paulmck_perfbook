@@ -324,10 +324,53 @@ But first, the next section defines RCU's core API.
 
 The full Linux-kernel API is quite extensive, with more than one
 hundred API members.
-However, this section will confine itself to six core RCU API members,
-which suffices for the upcoming sections introducing RCU and covering
-its fundamentals.
+However, this section will confine itself to the six core RCU API members
+shown in
+\cref{tab:defer:Core RCU API},
+which suffices for the examples in the upcoming sections.
 The full API is covered in \cref{sec:defer:RCU Linux-Kernel API}.
+
+\begin{table*}[tb]
+\renewcommand*{\arraystretch}{1.25}
+\rowcolors{2}{}{lightgray}
+\small
+\centering
+\ebresizewidth{
+\begin{tabular}{llp{2.4in}}
+\toprule
+&
+	Primitive &
+		Purpose \\
+\midrule
+\cellcolor{white}\emph{Readers} &
+	\tco{rcu_read_lock()} &
+		Start an RCU read-side critical section. \\
+&
+	\tco{rcu_read_unlock()} &
+		End an RCU read-side critical section. \\
+\cellcolor{white}&
+	\tco{rcu_dereference()} &
+		Safely load an RCU-protected pointer. \\
+\midrule
+\emph{Updaters} &
+	\tco{synchronize_rcu()} &
+		Wait for all pre-existing RCU read-side critical sections to
+		complete. \\
+\cellcolor{white}&
+	\tco{call_rcu()} &
+		Asynchronous counterpart to \co{synchronize_rcu()}:
+		Once all pre-exiting RCU read-side critical sections
+		have completed, pass the specified value to the specified
+		function. \\
+&
+	\tco{rcu_assign_pointer()} &
+		Safely update an RCU-protected pointer. \\
+\bottomrule
+\end{tabular}
+}
+\caption{Core RCU API}
+\label{tab:defer:Core RCU API}
+\end{table*}
 
 Three members of the core APIs are used by readers.
 The \apik{rcu_read_lock()} and \apik{rcu_read_unlock()} functions delimit
@@ -380,48 +423,6 @@ that \co{rcu_assign_pointer()} must prevent the compiler and the CPU
 from reordering this assignment to precede any prior assignments used
 to initialize the pointed-to structure.
 
-\begin{table*}
-\renewcommand*{\arraystretch}{1.25}
-\rowcolors{2}{}{lightgray}
-\small
-\centering
-\ebresizewidth{
-\begin{tabular}{llp{2.4in}}
-\toprule
-&
-	Primitive &
-		Purpose \\
-\midrule
-\cellcolor{white}\emph{Readers} &
-	\tco{rcu_read_lock()} &
-		Start an RCU read-side critical section. \\
-&
-	\tco{rcu_read_unlock()} &
-		End an RCU read-side critical section. \\
-\cellcolor{white}&
-	\tco{rcu_dereference()} &
-		Safely load an RCU-protected pointer. \\
-\midrule
-\emph{Updaters} &
-	\tco{synchronize_rcu()} &
-		Wait for all pre-existing RCU read-side critical sections to
-		complete. \\
-\cellcolor{white}&
-	\tco{call_rcu()} &
-		Asynchronous counterpart to \co{synchronize_rcu()}:
-		Once all pre-exiting RCU read-side critical sections
-		have completed, pass the specified value to the specified
-		function. \\
-&
-	\tco{rcu_assign_pointer()} &
-		Safely update an RCU-protected pointer. \\
-\bottomrule
-\end{tabular}
-}
-\caption{Core RCU API}
-\label{tab:defer:Core RCU API}
-\end{table*}
-
 \QuickQuiz{
 	What does \co{synchronize_rcu()} do if it starts at about
 	the same time as an \co{rcu_read_lock()}?
@@ -431,10 +432,9 @@ to initialize the pointed-to structure.
 	for the corresponding \co{rcu_read_unlock()}.
 }\QuickQuizEnd
 
-The core RCU API is summarized in \cref{tab:defer:Core RCU API} for
-easy reference.
-With that, we are ready to continue this introduction to RCU with
-the key RCU operation, waiting for readers.
+We are now ready to continue this introduction to RCU with the most
+fundamental of these core RCU operations, \co{synchronize_rcu()} and
+\co{call_rcu()}, each of which waits for pre-existing readers.
 
 \subsubsection{Waiting for Readers}
 \label{sec:defer:Waiting for Readers}
