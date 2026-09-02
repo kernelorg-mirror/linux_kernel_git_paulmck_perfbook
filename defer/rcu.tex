@@ -39,6 +39,47 @@ whether it is possible to do better.
 This section introduces \IXBacrfst{rcu}, which provides
 an API that allows readers to be associated with regions in the source code,
 rather than with expensive updates to frequently updated shared data.
+
+Although RCU has gained a reputation for being subtle and difficult,
+when used properly, it is quite straightforward.
+In fact, no less an authority than Butler Lampson classifies it as easy
+concurrency~\cite{ButlerLampson2022ProgrammingConcurrentSystems}.
+And Lampson is quite right:
+The core concept behind RCU is nothing more than updaters being
+guaranteed to wait for pre-existing (and \emph{only} pre-existing)
+readers to complete.
+For their part, Balmau, Guerraoui, Herlihy, and Zablotchi state
+``QSBR [a particular class of RCU implementations] is fast and can be
+applied to virtually any data structure''.
+
+\QuickQuiz{
+	There is no way RCU can be this simple!!!
+	What on earth could you \emph{possibly} do with a synchronization
+	primitive that is nothing more than a simple delay???
+}\QuickQuizAnswer{
+	I am sorry, but RCU's core concept really is that simple!
+	And you can do many amazing things with RCU's simple delay.
+	Please continue reading this section in order to learn how.
+}\QuickQuizEnd
+
+On the other hand, making good use of RCU often requires that you think
+differently about concurrency in general and about your use case in
+particular.
+Much of the remainder of this section therefore provides a guide to
+mapping use cases onto RCU.
+
+\QuickQuiz{
+	Enough of this noise!!!
+	Isn't RCU nothing more nor less than a replacement for some
+	reader-writer-locking use cases???
+}\QuickQuizAnswer{
+	It is true that Linux-kernel RCU has most frequently been used
+	to replace reader-writer locking,
+	However,
+	\cref{sec:defer:RCU Usage}
+	shows many additional RCU use cases.
+}\QuickQuizEnd
+
 The remainder of this
 section examines RCU from a number of different perspectives.
 \Cref{sec:defer:Introduction to RCU} provides the classic
@@ -51,47 +92,6 @@ API,
 and finally
 \cref{sec:defer:RCU Related Work} covers recent work related
 to RCU.
-
-\QuickQuiz{
-	Enough of this noise!!!
-	Isn't RCU simply a replacement for some reader-writer-locking
-	use cases???
-}\QuickQuizAnswer{
-	It is true that Linux-kernel RCU has most frequently been used
-	to replace reader-writer locking,
-	However, there are many other RCU use cases.
-	See \cref{sec:defer:RCU Usage}.
-}\QuickQuizEnd
-
-Although RCU has gained a reputation for being subtle and difficult,
-when used properly, it is quite straightforward.
-In fact, no less an authority than Butler Lampson classifies it as easy
-concurrency~\cite[Chapter 3]{ButlerLampson2022ProgrammingConcurrentSystems}.
-And Lampson is quite right:
-The core concept behind RCU is nothing more than that updaters are
-guaranteed to wait for pre-existing (and \emph{only} pre-existing)
-readers to complete.
-For their part, Balmau, Guerraoui, Herlihy, and Zablotchi state
-``QSBR [a particular class of RCU implementations] is fast and can be
-applied to virtually any data structure''.
-
-On the other hand, making good use of RCU often requires that you think
-differently about concurrency in general and about your use case in
-particular.
-Much of the remainder of this section therefore provides a guide to
-mapping use cases onto RCU.
-
-\QuickQuiz{
-	RCU cannot possibly be this simple!!!
-	And what on earth could you possibly do with a synchronization
-	primitive that is nothing more than a simple delay???
-}\QuickQuizAnswer{
-	I am sorry, but the core of RCU really is exactly that simple!
-
-	And you can do many amazing things with RCU's simple delay.
-	Please feel free to continue reading this section in order to
-	learn how.
-}\QuickQuizEnd
 
 \input{defer/rcuintro}
 \input{defer/rcufundamental}
