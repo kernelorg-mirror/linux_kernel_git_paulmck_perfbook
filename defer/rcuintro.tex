@@ -169,10 +169,9 @@ This transformation would fatally confuse any implementation of
 \co{do_something_with()} that assumed that it was being passed values
 from the same structure.
 \setlnpref{C}
-To prevent this transformation, use \co{rcu_dereference()} as
-shown on \clnrefrange{C1}{C3} of this listing,
-thus informing the compiler of the
-possibility of concurrent updates to \co{gp}.
+To prevent this transformation, use \co{rcu_dereference()} as shown on
+\clnrefrange{C1}{C3} of this listing, to inform the compiler of possible
+concurrent updates to \co{gp}.
 \end{fcvref}
 
 \begin{fcvref}[ln:defer:Compilers Can Reorder Accesses]
@@ -224,8 +223,9 @@ As can be seen in
 the first step is easy.
 Again taking the lessons from
 \cref{sec:toolsoftrade:Shared-Variable Shenanigans}
-to heart, \co{smp_store_release()} is used to \co{NULL} the pointer,
-thus moving from the first row to the second in the figure.
+to heart, \co{smp_store_release()} (or, as noted earlier,
+\co{rcu_assign_pointer()}) is used to \co{NULL} the pointer, thus moving
+from the first row to the second in the figure.
 At this point, pre-existing readers see the old structure with
 \co{->addr} of~42 and \co{->iface} of~1, but new readers will see
 a \co{NULL} pointer, that is, concurrent readers can disagree on
